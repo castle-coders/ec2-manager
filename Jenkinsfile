@@ -68,6 +68,7 @@ spec:
       }
       stage("deploy") {
         container('kubectl') {
+          sh('kubectl apply -f deploy/config.yaml')
           sh('kubectl apply -f deploy/deploy.yaml')
         }
       }
