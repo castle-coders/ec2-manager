@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from .models import Ec2Instance
+from . import aws
 
 def manage(request):
     servers = Ec2Instance.objects.all()
