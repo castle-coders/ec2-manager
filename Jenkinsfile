@@ -3,6 +3,9 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
+  - name: python
+    image: python:3-slim
+    commnad: ['cat']
   - name: docker
     image: docker:latest
     command: ['cat']
@@ -30,6 +33,12 @@ spec:
 
     stage("checkout") {
       checkout scm
+    }
+
+    stage("collect staticassets"){
+        container('python'){
+            sh('make staticassets')
+        }
     }
 
     def serviceImage
