@@ -4,7 +4,7 @@ kind: Pod
 spec:
   containers:
   - name: python
-    image: python:3-slim
+    image: python:3
     commnad: ['cat']
     tty: true
   - name: docker
