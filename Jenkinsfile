@@ -37,8 +37,8 @@ spec:
     
     stage("build image") {
       container('docker'){
-        serviceImage = docker.build(serviceImageVersionTag, "build/service/Dockerfile")
-        staticassetsImage = docker.build(staticassetsImageVersionTag, "build/staticassets/Dockerfile")
+        serviceImage = docker.build(serviceImageVersionTag, "-f build/service/Dockerfile .")
+        staticassetsImage = docker.build(staticassetsImageVersionTag, "-f build/staticassets/Dockerfile .")
       }
     }
 
