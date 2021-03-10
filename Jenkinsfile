@@ -29,7 +29,7 @@ spec:
 
     def serviceImageName = "$CONTAINER_REGISTRY/$SERVICE_CONTAINER_NAME" 
     def serviceImageVersionTag = "$serviceImageName:$BUILD_NUMBER"
-    def staticassetsImageName = "$CONTAINER_REGISTRY/$SERVICE_CONTAINER_NAME" 
+    def staticassetsImageName = "$CONTAINER_REGISTRY/$STATICASSETS_CONTAINER_NAME" 
     def staticassetsImageVersionTag = "$staticassetsImageName:$BUILD_NUMBER"
 
     stage("checkout") {
