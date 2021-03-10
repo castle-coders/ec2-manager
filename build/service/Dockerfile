@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM python:3-slim
 
 # Create a group and user to run our app
 ARG APP_USER=managerapp
@@ -36,6 +36,7 @@ RUN pip install gunicorn
 WORKDIR /
 COPY managersite /
 COPY build/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod a+x /docker-entrypoint.sh
 
 # uWSGI will lißsten on this port
 EXPOSE 8000
