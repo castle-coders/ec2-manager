@@ -13,6 +13,7 @@ RUN set -ex \
     && RUN_DEPS=" \
     libpcre3 \
     mime-support \
+    default-libmysqlclient-dev \
     " \
     && seq 1 8 | xargs -I{} mkdir -p /usr/share/man/man{} \
     && apt-get update && apt-get install -y --no-install-recommends $RUN_DEPS \
@@ -30,7 +31,6 @@ RUN set -ex \
     && BUILD_DEPS=" \
         build-essential \
         python3-dev \
-        default-libmysqlclient-dev \
     " \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && pip install --no-cache-dir -r /requirements.txt \
