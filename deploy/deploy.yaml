@@ -24,9 +24,9 @@ spec:
         imagePullPolicy: Always
         envFrom:
         - secretRef:
-          name: ec2-manager-secret
+            name: ec2-manager-secret
         - configMapRef:
-          name: ec2-manager-config
+            name: ec2-manager-config
 ---
 apiVersion: apps/v1
 kind: Deployment
