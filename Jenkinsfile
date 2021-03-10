@@ -7,6 +7,10 @@ spec:
     image: python:3
     commnad: ['cat']
     tty: true
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:v1.14.0 # use a version that matches your K8s version
+    command: ['cat']
+    tty: true
   - name: docker
     image: docker:latest
     command: ['cat']
@@ -65,7 +69,9 @@ spec:
     }
 
     stage("deploy") {
-        sh('kubectl apply -f deploy/deploy.yaml')
+        container('kubectl') {
+          sh('kubectl apply -f deploy/deploy.yaml')
+        }
     }
   }
 }
