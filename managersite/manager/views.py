@@ -22,12 +22,12 @@ def manageDetail(request, server_id):
         if form.is_valid():
             action = form.cleaned_data['action']
             if action == "start":
-                aws.start_instance(server.instance_id)
+                result = aws.start_instance(server.instance_id)
             elif action == "stop":
-                aws.stop_instance(server.instance_id)
+                result = aws.stop_instance(server.instance_id)
             else:
-                action = "unknown..."
-            return HttpResponse(action)
+                result = "unknown..."
+            return HttpResponse(result)
     else:
         form = ActionForm()
 

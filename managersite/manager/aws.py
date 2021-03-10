@@ -22,8 +22,8 @@ def get_instance_info(iid):
 
 def stop_instance(iid):
   client = _get_client()
-  client.stop_instances(InstanceIds=[iid])
+  return client.stop_instances(InstanceIds=[iid])
 
 def start_instance(iid):
   client = _get_client()
-  client.start_instances(InstanceIds=[iid])
+  return client.start_instances(InstanceIds=[iid])
