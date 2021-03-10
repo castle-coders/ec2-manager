@@ -38,6 +38,7 @@ spec:
 
     stage("collect staticassets"){
         container('python'){
+            sh('make install-requirements')
             sh('make staticassets')
         }
     }
