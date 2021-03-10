@@ -27,11 +27,18 @@ COPY requirements.txt /requirements.txt
 # Install build deps, then run `pip install`, then remove unneeded build deps all in a single step.
 # Correct the path to your production requirements file, if needed.
 RUN set -ex \
+    && BUILD_DEPS=" \
+        build-essential \
+        python3-dev \
+        default-libmysqlclient-dev \
+    " \
+    && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && pip install --no-cache-dir -r /requirements.txt \
+    && pip install mysqlclient \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install gunicorn
-RUN pip install pymysql
 
 # Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
 WORKDIR /
