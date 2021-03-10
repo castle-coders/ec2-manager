@@ -1,0 +1,103 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ec2-manager
+  labels:
+    app: ec2-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ec2-manager
+  template:
+    metadata:
+      labels:
+        app: ec2-manager
+        name: ec2-manager
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: carbon
+      containers:
+      - name: ec2manager
+        image: docker.local.pw10n.pw/ec2manager:latest
+        imagePullPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ec2-manager-staticassets
+  labels:
+    app: ec2-manager-staticassets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ec2-manager-staticassets
+  template:
+    metadata:
+      labels:
+        app: ec2-manager-staticassets
+        name: ec2-manager-staticassets
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: carbon
+      containers:
+      - name: ec2manager-staticassets
+        image: docker.local.pw10n.pw/ec2manager-staticassets:latest
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ec2-manager
+spec:
+  selector:
+    app: ec2-manager
+  type: ClusterIP
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: ec2-manager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ec2-manager-staticassets
+spec:
+  selector:
+    app: ec2-manager-staticassets
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    name: ec2-manager-staticassets
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ec2-manager
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: (Host(`play.pw10n.pw`) || Host(`play.local.pw10n.pw`)) && PathPrefix(`/static/`)
+      priority: 30
+      kind: Rule
+      services:
+        - name: ec2-manager-staticassets
+          kind: Service
+          port: 80
+          scheme: http
+    - match: Host(`play.pw10n.pw`) || Host(`play.local.pw10n.pw`)
+      priority: 20
+      kind: Rule
+      services:
+        - name: ec2-manager
+          kind: Service
+          port: 8000
+          scheme: http
+  tls:
+   secretName: localcert-tls
+   domains:
+     - main: castle.pw10n.pw

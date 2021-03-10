@@ -63,5 +63,9 @@ spec:
         }
       }
     }
+
+    stage("deploy") {
+        sh('kubectl apply -f deploy/deploy.yaml')
+    }
   }
 }
