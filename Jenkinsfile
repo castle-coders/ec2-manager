@@ -6,6 +6,7 @@ spec:
   - name: python
     image: python:3-slim
     commnad: ['cat']
+    tty: true
   - name: docker
     image: docker:latest
     command: ['cat']
