@@ -42,7 +42,7 @@ RUN chmod a+x /docker-entrypoint.sh
 EXPOSE 8000
 
 # Add any static environment variables needed by Django or your settings file here:
-ENV DJANGO_SETTINGS_MODULE=managersite.settings
+ENV DJANGO_SETTINGS_MODULE=managersite.settings.prod
 
 # Call collectstatic (customize the following line with the minimal environment variables needed for manage.py to run):
 #RUN DATABASE_URL='' python manage.py collectstatic --noinput
