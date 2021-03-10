@@ -6,11 +6,12 @@ def _get_client():
 
 def get_instance_info(iid):
   client = _get_client()
-  instance = client.Instance(iid)
+  info = client.describe_instances(InstanceIds=[iid])
+  instance = info['Reservations'][0]['Instances'][0] # TODO: fail gracefully
   return {
-      "state": instance.state['Name'],
-      "ip": instance.public_ip_address,
-      "launch_time": instance.launch_time,
+      "state": instance['State']['Name'],
+      "ip": instance['PublicIpAddress]'],
+      "launch_time": instance['LaunchTime'],
   }
 
 def stop_instance(iid):
