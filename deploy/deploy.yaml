@@ -22,6 +22,11 @@ spec:
       - name: ec2manager
         image: docker.local.pw10n.pw/ec2manager:latest
         imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+          name: ec2-manager-secret
+        - configMapRef:
+          name: ec2-manager-config
 ---
 apiVersion: apps/v1
 kind: Deployment
