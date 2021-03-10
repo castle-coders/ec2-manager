@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -22,9 +23,11 @@ def manageDetail(request, server_id):
         if form.is_valid():
             action = form.cleaned_data['action']
             if action == "start":
-                result = aws.start_instance(server.instance_id)
+                result_d = aws.start_instance(server.instance_id)
+                result = json.dumps(result_d)
             elif action == "stop":
-                result = aws.stop_instance(server.instance_id)
+                result_d = aws.stop_instance(server.instance_id)
+                result = json.dumps(result_d)
             else:
                 result = "unknown..."
             return HttpResponse(result)
