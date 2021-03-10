@@ -32,13 +32,8 @@ spec:
       checkout scm
     }
 
-    stage("build") {
-        container('golang'){
-            sh('make build')
-        }
-    }
-
-    def image
+    def serviceImage
+    def staticassetsImage
     
     stage("build image") {
       container('docker'){
