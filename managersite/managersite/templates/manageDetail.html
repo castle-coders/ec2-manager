@@ -17,6 +17,13 @@
         <li>{{ ec2.ip }}</li>
         <li>{{ ec2.launch_time }}</li>
       </ul>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+
     </main>
   </body>
 </html>
