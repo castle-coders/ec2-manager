@@ -1,4 +1,10 @@
 
+install-requirements:
+	pip install -r requirements.txt
+
+freeze-requirements:
+	pip freeze > requirements.txt
+
 service-docker:
 	docker build -f build/service/Dockerfile -t docker.local.pw10n.pw/ec2manager:latest .
 
