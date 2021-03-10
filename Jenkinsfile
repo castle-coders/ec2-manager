@@ -66,12 +66,12 @@ spec:
           staticassetsImage.push('latest')
         }
       }
-    }
-
-    stage("deploy") {
+      stage("deploy") {
         container('kubectl') {
           sh('kubectl apply -f deploy/deploy.yaml')
         }
+      }
     }
+
   }
 }
