@@ -31,6 +31,7 @@ RUN set -ex \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install gunicorn
+RUN pip install pymysql
 
 # Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
 WORKDIR /
