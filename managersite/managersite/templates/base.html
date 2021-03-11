@@ -1,0 +1,16 @@
+{% extends 'bootstrap4/bootstrap4.html' %}
+
+{% load bootstrap4 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% block bootstrap4_content %}
+<div class="container">
+    <h1>{% block title %}(no title){% endblock %}</h1>
+    
+    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+    {% block content %}(no content){% endblock %}
+</div>
+{% endblock %}
