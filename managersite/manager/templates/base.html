@@ -2,8 +2,7 @@
 
 {% load bootstrap4 %}
 
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
+{% block bootstrap4_title %}{% block html_title %}ec2 manager{% endblock %}{% endblock %}
 
 {% block bootstrap4_content %}
 <div class="container">
