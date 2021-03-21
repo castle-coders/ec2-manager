@@ -57,6 +57,11 @@ spec:
       }
     }
 
+    stage("create deploy config"){
+      sh('cat deploy/config.yaml.template | sed "s/{{BUILD_NUMBER}}/$BUILD_NUMBER/g" > deploy/config.yaml')
+      sh('cat deploy/deploy.yaml.template | sed "s/{{BUILD_NUMBER}}/$BUILD_NUMBER/g" > deploy/deploy.yaml')
+    }
+
     if (env.BRANCH_NAME == "main"){
       stage("push image") {
         container('docker'){
