@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %}Manage Server: {{ server.name }}{% endblock %}
+{% block content %}
+<h1>{{ server.name }}</h1>
+<ul>
+  <li>{{ server.instance_id }} </li>
+  <li>{{ ec2.state }}</li>
+  <li>{{ ec2.ip }}</li>
+  <li>{{ ec2.launch_time }}</li>
+</ul>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}

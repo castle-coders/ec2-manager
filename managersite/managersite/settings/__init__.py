@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,20 @@ STATIC_ROOT = os.path.join(SETTINGS_ROOT, 'static')
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# TODO setup npm or yarn
+BOOTSTRAP4_FOLDER = "bootstrap-4.1.3-dist"
+
+BOOTSTRAP4 = {
+    #"css_url": {
+    #    "href": os.path.join(STATIC_URL, BOOTSTRAP4_FOLDER, "css/bootstrap.min.css"),
+    #},
+    #"javascript_url": {
+    #    "url": os.path.join(STATIC_URL, BOOTSTRAP4_FOLDER, "js/bootstrap.min.js")
+    #},
+    #"jquery_url": {
+    #    "href": os.path.join(STATIC_URL, "jquery/js/jquery-3.6.0.min.js")
+    #},
+    "javascript_in_head": True,
+    'include_jquery': True,
+}
