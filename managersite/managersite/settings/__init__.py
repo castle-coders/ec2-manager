@@ -131,14 +131,15 @@ LOGOUT_REDIRECT_URL = '/'
 BOOTSTRAP4_FOLDER = "bootstrap-4.1.3-dist"
 
 BOOTSTRAP4 = {
-    "css_url": {
-        "href": os.path.join(STATIC_URL, BOOTSTRAP4_FOLDER, "css/bootstrap.min.css"),
-    },
-    "javascript_url": {
-        "url": os.path.join(STATIC_URL, BOOTSTRAP4_FOLDER, "js/bootstrap.min.js")
-    },
-    "jquery_url": {
-        "href": os.path.join(STATIC_URL, "jquery/js/jquery-3.6.0.min.js")
-    },
+    #"css_url": {
+    #    "href": os.path.join(STATIC_URL, BOOTSTRAP4_FOLDER, "css/bootstrap.min.css"),
+    #},
+    #"javascript_url": {
+    #    "url": os.path.join(STATIC_URL, BOOTSTRAP4_FOLDER, "js/bootstrap.min.js")
+    #},
+    #"jquery_url": {
+    #    "href": os.path.join(STATIC_URL, "jquery/js/jquery-3.6.0.min.js")
+    #},
+    "javascript_in_head": True,
     'include_jquery': True,
 }
