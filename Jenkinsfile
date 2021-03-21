@@ -32,9 +32,9 @@ spec:
     def STATICASSETS_CONTAINER_NAME = "ec2manager-staticassets"
 
     def serviceImageName = "$CONTAINER_REGISTRY/$SERVICE_CONTAINER_NAME" 
-    def serviceImageVersionTag = "$serviceImageName:$BUILD_NUMBER"
+    def serviceImageVersionTag = "$serviceImageName:$GIT_COMMIT"
     def staticassetsImageName = "$CONTAINER_REGISTRY/$STATICASSETS_CONTAINER_NAME" 
-    def staticassetsImageVersionTag = "$staticassetsImageName:$BUILD_NUMBER"
+    def staticassetsImageVersionTag = "$staticassetsImageName:$GIT_COMMIT"
 
     stage("checkout") {
       checkout scm
@@ -58,8 +58,10 @@ spec:
     }
 
     stage("create deploy config"){
-      sh('sed -i "s/{{BUILD_NUMBER}}/$BUILD_NUMBER/g" deploy/config.yaml.template > deploy/config.yaml')
-      sh('sed -i "s/{{BUILD_NUMBER}}/$BUILD_NUMBER/g" deploy/deploy.yaml.template > deploy/deploy.yaml')
+      sh('sed -i "s/{{GIT_COMMIT}}/$GIT_COMMIT/g" deploy/config.yaml.template > deploy/config.yaml')
+      sh('sed -i "s/{{GIT_COMMIT}}/$GIT_COMMIT/g" deploy/deploy.yaml.template > deploy/deploy.yaml')
+      sh('cat deploy/config.yaml')
+      sh('cat deploy/deploy.yaml')
     }
 
     if (env.BRANCH_NAME == "main"){

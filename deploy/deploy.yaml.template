@@ -20,7 +20,7 @@ spec:
         kubernetes.io/hostname: carbon
       containers:
       - name: ec2manager
-        image: docker.local.pw10n.pw/ec2manager:{{BUILD_NUMBER}}
+        image: docker.local.pw10n.pw/ec2manager:{{GIT_COMMIT}}
         imagePullPolicy: Always
         envFrom:
         - secretRef:
@@ -49,7 +49,7 @@ spec:
         kubernetes.io/hostname: carbon
       containers:
       - name: ec2manager-staticassets
-        image: docker.local.pw10n.pw/ec2manager-staticassets:{{BUILD_NUMBER}}
+        image: docker.local.pw10n.pw/ec2manager-staticassets:{{GIT_COMMIT}}
         imagePullPolicy: Always
 ---
 apiVersion: v1
