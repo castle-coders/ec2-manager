@@ -75,8 +75,6 @@ spec:
         container('kubectl') {
           sh('kubectl apply -f deploy/config.yaml')
           sh('kubectl apply -f deploy/deploy.yaml')
-          sh('kubectl rollout restart deployment/ec2-manager')
-          sh('kubectl rollout restart deployment/ec2-manager-staticassets')
         }
       }
     }
