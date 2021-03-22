@@ -1,7 +1,10 @@
 import json
+from io import StringIO
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+import paramiko
+from paramiko.client import SSHClient
 from .models import Ec2Instance
 from .forms import ActionForm
 from . import aws
@@ -13,6 +16,15 @@ def manage(request):
         "servers": servers,
     }
     return render(request, 'manage.html', context)
+
+def _shutdown(server):
+    ssh_key = server.ssh_key
+    privKeyStringIO = StringIO(ssh_key)
+    pk = paramiko.Ed25519Key.from_private_key(privKeyStringIO)
+    client = SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(hostname=server.ssh_url, username=server.ssh_user, pkey = pk)
+    stdin, stdout, stderr = client.exec_command("./shutdown.sh")
 
 @login_required
 def manageDetail(request, server_id):
@@ -26,8 +38,9 @@ def manageDetail(request, server_id):
                 result_d = aws.start_instance(server.instance_id)
                 result = json.dumps(result_d)
             elif action == "stop":
-                result_d = aws.stop_instance(server.instance_id)
-                result = json.dumps(result_d)
+                #result_d = aws.stop_instance(server.instance_id)
+                _shutdown(server)
+                result = "stopping the server..."
             else:
                 result = "unknown..."
             return HttpResponse(result)
