@@ -1,11 +1,13 @@
 import json
 from io import StringIO
+from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseNotFound
 import paramiko
 from paramiko.client import SSHClient
-from .models import Ec2Instance
+from .models import Ec2Instance, ServerStatus
 from .forms import ActionForm
 from . import aws
 
@@ -54,3 +56,44 @@ def manageDetail(request, server_id):
         "form": form,
     }
     return render(request, 'manageDetail.html', context)
+
+def _genericNotFound():
+    return HttpResponseNotFound("not found")
+
+@csrf_exempt
+def serverPing(request, server_id):
+    try:
+        server = Ec2Instance.objects.get(pk=server_id)
+    except Ec2Instance.DoesNotExist:
+        return _genericNotFound() 
+
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        api_key = body['api-key']
+        if api_key != server.api_key:
+            return _genericNotFound()
+
+        check_idle_threshold = datetime.now() - timedelta(minutes=15)
+        pings_in_threshold = ServerStatus.objects.filter(timestamp__gt=check_idle_threshold)
+        count_pings = pings_in_threshold.count()
+
+        if count_pings > 0 and pings_in_threshold.filter(player_count__gt=0).count() == 0:
+            _shutdown(server)
+            return HttpResponse(status=201)
+        else:
+            ssh_key = server.ssh_key
+            privKeyStringIO = StringIO(ssh_key)
+            pk = paramiko.Ed25519Key.from_private_key(privKeyStringIO)
+            client = SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.connect(hostname=server.ssh_url, username=server.ssh_user, pkey = pk)
+            stdin, stdout, stderr = client.exec_command("./bin/valheim-status")
+            status_record_json = json.loads(stdout.read()) 
+            # TODO key error will exist when server is not running
+            status = ServerStatus()
+            status.player_count = status_record_json['player_count']
+            status.for_server = server
+            status.save()
+            return HttpResponse(status=201)
+    else: 
+        return _genericNotFound()
