@@ -1,4 +1,5 @@
 import json
+import logging
 from io import StringIO
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404, render
@@ -10,6 +11,8 @@ from paramiko.client import SSHClient
 from .models import Ec2Instance, ServerStatus
 from .forms import ActionForm
 from . import aws
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def manage(request):
@@ -37,14 +40,16 @@ def manageDetail(request, server_id):
         if form.is_valid():
             action = form.cleaned_data['action']
             if action == "start":
-                result_d = aws.start_instance(server.instance_id)
-                result = json.dumps(result_d)
+                #result_d = aws.start_instance(server.instance_id)
+                #result = json.dumps(result_d)
+                result = "fake start"
             elif action == "stop":
                 #result_d = aws.stop_instance(server.instance_id)
                 _shutdown(server)
                 result = "stopping the server..."
             else:
                 result = "unknown..."
+            logger.info("{user} requested {action} on {server} and got: {result}".format(user=request.user, action=action, server=server, result=result))
             return HttpResponse(result)
     else:
         form = ActionForm()
@@ -84,6 +89,7 @@ def serverPing(request, server_id):
                     has_players = True
                     break
             if not has_players:
+                logger.info("server {server} idle, shutting down".format(server=server))
                 _shutdown(server)
                 return HttpResponse(status=201)
 
