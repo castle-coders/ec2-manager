@@ -74,26 +74,32 @@ def serverPing(request, server_id):
             return _genericNotFound()
 
         check_idle_threshold = datetime.now() - timedelta(minutes=15)
-        pings_in_threshold = ServerStatus.objects.filter(timestamp__gt=check_idle_threshold)
+        pings_in_threshold = ServerStatus.objects.filter(for_server_id=server_id).filter(timestamp__gt=check_idle_threshold).order_by('-timestamp')
         count_pings = pings_in_threshold.count()
 
-        if count_pings > 0 and pings_in_threshold.filter(player_count__gt=0).count() == 0:
-            _shutdown(server)
-            return HttpResponse(status=201)
-        else:
-            ssh_key = server.ssh_key
-            privKeyStringIO = StringIO(ssh_key)
-            pk = paramiko.Ed25519Key.from_private_key(privKeyStringIO)
-            client = SSHClient()
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            client.connect(hostname=server.ssh_url, username=server.ssh_user, pkey = pk)
-            stdin, stdout, stderr = client.exec_command("./bin/valheim-status")
-            status_record_json = json.loads(stdout.read()) 
-            # TODO key error will exist when server is not running
-            status = ServerStatus()
-            status.player_count = status_record_json['player_count']
-            status.for_server = server
-            status.save()
-            return HttpResponse(status=201)
+        if count_pings > 0:
+            has_players = False
+            for ping in pings_in_threshold:
+                if ping.player_count > 0:
+                    has_players = True
+                    break
+            if not has_players:
+                _shutdown(server)
+                return HttpResponse(status=201)
+
+        ssh_key = server.ssh_key
+        privKeyStringIO = StringIO(ssh_key)
+        pk = paramiko.Ed25519Key.from_private_key(privKeyStringIO)
+        client = SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname=server.ssh_url, username=server.ssh_user, pkey = pk)
+        stdin, stdout, stderr = client.exec_command("./bin/valheim-status")
+        status_record_json = json.loads(stdout.read()) 
+        # TODO key error will exist when server is not running
+        status = ServerStatus()
+        status.player_count = status_record_json['player_count']
+        status.for_server = server
+        status.save()
+        return HttpResponse(status=201)
     else: 
         return _genericNotFound()
