@@ -44,9 +44,8 @@ def manageDetail(request, server_id):
         if form.is_valid():
             action = form.cleaned_data['action']
             if action == "start":
-                #result_d = aws.start_instance(server.instance_id)
-                #result = json.dumps(result_d)
-                result = "fake start"
+                result_d = aws.start_instance(server.instance_id)
+                result = json.dumps(result_d)
             elif action == "stop":
                 #result_d = aws.stop_instance(server.instance_id)
                 _shutdown(server)
