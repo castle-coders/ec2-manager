@@ -23,6 +23,10 @@ def manage(request):
     return render(request, 'manage.html', context)
 
 def _shutdown(server):
+    status = ServerStatus()
+    status.player_count = -1 
+    status.for_server = server
+    status.save()
     ssh_key = server.ssh_key
     privKeyStringIO = StringIO(ssh_key)
     pk = paramiko.Ed25519Key.from_private_key(privKeyStringIO)
@@ -40,9 +44,8 @@ def manageDetail(request, server_id):
         if form.is_valid():
             action = form.cleaned_data['action']
             if action == "start":
-                #result_d = aws.start_instance(server.instance_id)
-                #result = json.dumps(result_d)
-                result = "fake start"
+                result_d = aws.start_instance(server.instance_id)
+                result = json.dumps(result_d)
             elif action == "stop":
                 #result_d = aws.stop_instance(server.instance_id)
                 _shutdown(server)
@@ -85,7 +88,7 @@ def serverPing(request, server_id):
         if count_pings > 0:
             has_players = False
             for ping in pings_in_threshold:
-                if ping.player_count > 0:
+                if ping.player_count != 0:
                     has_players = True
                     break
             if not has_players:
