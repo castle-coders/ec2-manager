@@ -85,7 +85,7 @@ def serverPing(request, server_id):
         pings_in_threshold = ServerStatus.objects.filter(for_server_id=server_id).filter(timestamp__gt=check_idle_threshold).order_by('-timestamp')
         count_pings = pings_in_threshold.count()
 
-        if count_pings > 0:
+        if count_pings > 2:
             has_players = False
             for ping in pings_in_threshold:
                 if ping.player_count != 0:
